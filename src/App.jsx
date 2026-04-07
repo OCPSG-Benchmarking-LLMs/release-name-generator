@@ -1,4 +1,6 @@
 import React, { useMemo, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 
 const ADJECTIVES = [
   "amber", "ancient", "autumn", "azure", "bold", "brisk", "calm", "cinder",
@@ -57,7 +59,7 @@ function generateCodename(seedInput, sequence = 0) {
 
 function buildVersionString({ major, minor, patch, prereleaseTag, prereleaseNumber }) {
   const base = `v${major}.${minor}.${patch}`;
-  if (!prereleaseTag || prereleaseTag === "none") return base;
+  if (!prereleaseTag || prereleaseTag === "release") return base;
   return `${base}-${prereleaseTag}.${prereleaseNumber}`;
 }
 
@@ -134,11 +136,11 @@ export default function App() {
       <div style={styles.container}>
         <h1 style={styles.title}>Release name generator</h1>
         <p style={styles.subtitle}>
-          Generate a deterministic codename from a seed, with optional Semantic Versioning.
+          Generate a deterministic codename from a seed, with optional Semantic Versioning
         </p>
 
         <div style={styles.card}>
-          <label style={styles.label}>Seed</label>
+          <label style={styles.label}>Seed (string or number)</label>
           <input
             type="text"
             value={seed}
@@ -173,7 +175,7 @@ export default function App() {
           {includeVersionPolicy && (
             <div style={styles.grid}>
               <div>
-                <label style={styles.label}>Major</label>
+                <label style={styles.label}>Major change</label>
                 <input
                   type="number"
                   min="0"
@@ -184,7 +186,7 @@ export default function App() {
               </div>
 
               <div>
-                <label style={styles.label}>Minor</label>
+                <label style={styles.label}>Minor change</label>
                 <input
                   type="number"
                   min="0"
@@ -206,17 +208,30 @@ export default function App() {
               </div>
 
               <div>
-                <label style={styles.label}>Pre-release</label>
+                <label style={styles.label}>Pre-release/release</label>
                 <select
                   value={prereleaseTag}
-                  onChange={(e) => setPrereleaseTag(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setPrereleaseTag(value);
+                    
+                    if (value === "release") {
+                      setMajor("1");
+                      setMinor("0");
+                      setPatch("0");
+                    }
+                  }}
                   style={styles.input}
                 >
-                  <option value="none">none</option>
+                  
                   <option value="alpha">alpha</option>
                   <option value="beta">beta</option>
                   <option value="rc">rc</option>
+                  <option value="release">release</option>
                 </select>
+                <p style={styles.helperText}>
+                  rc = release candidate
+                </p>
               </div>
 
               <div>
@@ -226,9 +241,12 @@ export default function App() {
                   min="1"
                   value={prereleaseNumber}
                   onChange={(e) => setPrereleaseNumber(e.target.value)}
-                  disabled={prereleaseTag === "none"}
+                  disabled={prereleaseTag === "release"}
                   style={styles.input}
                 />
+                <p style={styles.helperText}>
+                  Only pre-release
+                </p>
               </div>
             </div>
           )}
@@ -258,10 +276,21 @@ export default function App() {
               {" "}vMAJOR.MINOR.PATCH[-alpha.N|-beta.N|-rc.N] "Name"
             </code>
           </p>
-          <p style={{ marginBottom: 0 }}>
-            The same seed and sequence produce the same codename. Disabling the version policy generates only the name.
-          </p>
+          <ul style={styles.noteList}>
+            <li>The same seed and sequence produce the same codename.</li>
+            <li>Disabling the version policy generates only the name.</li>
+          </ul>
         </div>
+
+        <footer style={styles.footer}>
+          <p style={styles.footerText}>
+            Made with <FontAwesomeIcon icon={faCoffee} style={styles.footerIcon} /> by{" "}
+            <a href="https://github.com/OCPSG-Benchmarking-LLMs" target="_blank" rel="noopener noreferrer" style={styles.footerLink} >
+            OCPSG-Benchmarking-LLMs
+            </a>
+          </p>
+        </footer>
+
       </div>
     </div>
   );
@@ -273,8 +302,8 @@ const styles = {
     margin: 0,
     padding: "32px 16px",
     background: "#f8fafc",
-    color: "#0f172a",
-    fontFamily: "Inter, Arial, sans-serif",
+    color: "#002147",
+    fontFamily: '"Lora", serif',
     boxSizing: "border-box",
   },
   container: {
@@ -282,18 +311,23 @@ const styles = {
     margin: "0 auto",
   },
   title: {
-    fontSize: "2.2rem",
+    fontSize: "2.4rem",
     marginBottom: "0.5rem",
+    color: "#002147",
+    fontFamily: '"Roboto", sans-serif',
+    fontWeight: 700,
+    letterSpacing: "0.01em",
   },
   subtitle: {
-    fontSize: "1rem",
-    color: "#475569",
+    fontSize: "1.05rem",
+    color: "#33506b",
     marginBottom: "1.5rem",
-    lineHeight: 1.6,
+    lineHeight: 1.7,
+    fontFamily: '"Lora", serif',
   },
   card: {
     background: "#ffffff",
-    border: "1px solid #e2e8f0",
+    border: "1px solid #d7e1ea",
     borderRadius: "16px",
     padding: "20px",
     boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
@@ -304,20 +338,26 @@ const styles = {
     marginBottom: "6px",
     marginTop: "12px",
     fontWeight: 600,
+    color: "#002147",
+    fontFamily: '"Roboto", sans-serif',
   },
   input: {
     width: "100%",
     padding: "10px 12px",
     borderRadius: "10px",
-    border: "1px solid #cbd5e1",
+    border: "1px solid #b9c9d8",
     fontSize: "1rem",
     boxSizing: "border-box",
+    fontFamily: '"Lora", serif',
+    color: "#002147",
   },
   checkboxRow: {
     display: "flex",
     alignItems: "center",
     gap: "10px",
     marginTop: "16px",
+    color: "#002147",
+    fontFamily: '"Lora", serif',
   },
   grid: {
     display: "grid",
@@ -335,51 +375,102 @@ const styles = {
     padding: "10px 16px",
     borderRadius: "10px",
     border: "none",
-    background: "#0f172a",
+    background: "#002147",
     color: "#ffffff",
     cursor: "pointer",
     fontSize: "0.95rem",
+    fontFamily: '"Roboto", sans-serif',
+    fontWeight: 500,
   },
   buttonSecondary: {
     padding: "10px 16px",
     borderRadius: "10px",
-    border: "1px solid #cbd5e1",
+    border: "1px solid #00AAB4",
     background: "#ffffff",
-    color: "#0f172a",
+    color: "#002147",
     cursor: "pointer",
     fontSize: "0.95rem",
+    fontFamily: '"Roboto", sans-serif',
+    fontWeight: 500,
   },
   outputCard: {
-    background: "#0f172a",
+    background: "#002147",
     color: "#ffffff",
     borderRadius: "16px",
     padding: "20px",
     marginBottom: "20px",
+    borderLeft: "6px solid #FE615A",
   },
   outputLabel: {
     fontSize: "0.9rem",
-    opacity: 0.8,
+    opacity: 0.85,
     marginBottom: "10px",
+    color: "#cfe6ea",
+    fontFamily: '"Roboto", sans-serif',
+    fontWeight: 500,
   },
   outputText: {
-    fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+    fontFamily: '"Roboto", sans-serif',
     fontSize: "1.35rem",
     lineHeight: 1.6,
     wordBreak: "break-word",
+    fontWeight: 500,
   },
   note: {
     background: "#ffffff",
-    border: "1px solid #e2e8f0",
+    border: "1px solid #d7e1ea",
     borderRadius: "16px",
     padding: "16px 20px",
-    color: "#334155",
+    color: "#33506b",
     lineHeight: 1.7,
+    fontFamily: '"Lora", serif',
   },
   code: {
-    fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-    background: "#f1f5f9",
+    fontFamily: '"Roboto", sans-serif',
+    background: "#eef6f7",
     padding: "2px 6px",
     borderRadius: "6px",
     marginLeft: "6px",
+    color: "#002147",
+    fontSize: "0.95em",
+  },
+  footer: {
+    marginTop: "48px",
+    padding: "24px 0 8px 0",
+    textAlign: "center",
+  },
+  footerText: {
+    margin: 0,
+    color: "#33506b",
+    fontSize: "0.82rem",
+    fontFamily: '"Lora", serif',
+  },
+  footerIcon: {
+    color: "#FE615A",
+    margin: "0 3px",
+    fontSize: "0.8rem",
+  },
+  footerLink: {
+    color: "#00AAB4",
+    textDecoration: "none",
+    fontWeight: 600,
+    fontFamily: '"Roboto", sans-serif',
+    fontSize: "0.82rem",
+  },
+  helperText: {
+    marginTop: "6px",
+    marginBottom: 0,
+    fontSize: "0.72rem",
+    lineHeight: 1.5,
+    color: "#33506b",
+    fontFamily: '"Lora", serif',
+  },
+  noteList: {
+    marginTop: "8px",
+    marginBottom: 0,
+    paddingLeft: "20px",
+    color: "#33506b",
+    lineHeight: 1.7,
+    fontFamily: '"Lora", serif',
   },
 };
