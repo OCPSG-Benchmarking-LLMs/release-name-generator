@@ -113,4 +113,4 @@ This repository is configured for deployment to GitHub Pages using GitHub Action
 
 ## Credits
 
-- [OCPSG-Benchmarking-LLMs](https://github.com/OCPSG-Benchmarking-LLMs)
+- [OCPSG-Benchmarking-LLMs](https://ocpsg-benchmarking-llms.github.io/)

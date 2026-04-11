@@ -285,7 +285,7 @@ export default function App() {
         <footer style={styles.footer}>
           <p style={styles.footerText}>
             Made with <FontAwesomeIcon icon={faCoffee} style={styles.footerIcon} /> by{" "}
-            <a href="https://github.com/OCPSG-Benchmarking-LLMs" target="_blank" rel="noopener noreferrer" style={styles.footerLink} >
+            <a href="https://ocpsg-benchmarking-llms.github.io/" target="_blank" rel="noopener noreferrer" style={styles.footerLink} >
             OCPSG-Benchmarking-LLMs
             </a>
           </p>
