@@ -215,7 +215,7 @@ export default function App() {
                     const value = e.target.value;
                     setPrereleaseTag(value);
                     
-                    if (value === "release") {
+                    if (value === "rc" || value === "release") {
                       setMajor("1");
                       setMinor("0");
                       setPatch("0");
